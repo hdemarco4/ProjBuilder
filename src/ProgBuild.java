@@ -5,7 +5,7 @@ import java.util.*;
 public class ProgBuild {
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException, InterruptedException{
 
         System.out.println("Enter name of new file: ");
         Scanner scan1 = new Scanner(System.in);
@@ -20,23 +20,33 @@ public class ProgBuild {
             list[k] = scan2.nextInt();
         }
 
+        writer(a);
 
-        writer(a, list);
+        String commands = "cmd.exe", "/c", "javac " + a + ".java", "java " + a, list[0] + "", list[1] + "";
+
+        ProcessBuilder pb2 = new ProcessBuilder(commands);
+        Process process2 = pb2.start();
+        int answer = process2.waitFor();
+
+        System.out.println("The answer is " + answer);
+
 
     }
 
-    public static void writer(String a, int[] list){
+    public static void writer(String a){
 
         try {
-            PrintWriter writer = new PrintWriter(a + ".txt", "UTF-8");
-            writer.println("int[] list = new int[2]");
-            
-            writer.println("int b = list[0] + list[1];");
-            writer.println("System.out.println(b);");
-            writer.close();
+            PrintWriter out = new PrintWriter(a + ".java", "UTF-8");
+            out.println("public class " + a + "{\n");
+            out.println("    public static void main(String[] args){\n");
+            out.println("        int[] list = new int[2];\n");
+            out.println("        for(int i = 0; i < 2; i++){ list[i] = Integer.parseInt(args[i]); }\n");
+            out.println("        int b = list[0] + list[1];\n");
+            out.println("        System.out.println(b); }}\n");
+            out.close();
 
         } catch (IOException ex) {
-        // report
+            System.out.println("File write error");
         }
     }
 }
