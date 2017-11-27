@@ -1,5 +1,6 @@
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ProgBuild {
@@ -20,29 +21,40 @@ public class ProgBuild {
             list[k] = scan2.nextInt();
         }
 
-        writer(a);
+        writer(a, list);
 
-        String commands = "cmd.exe", "/c", "javac " + a + ".java", "java " + a, list[0] + "", list[1] + "";
+        Path path = FileSystems.getDefault().getPath(".");
+        String compile = "javac " + a + ".java";
+        String run = "java " + a;
+        String[] commands = {"CMD", "/C", path.toString(), compile, run};
 
         ProcessBuilder pb2 = new ProcessBuilder(commands);
         Process process2 = pb2.start();
-        int answer = process2.waitFor();
 
-        System.out.println("The answer is " + answer);
-
+        BufferedReader stdInput = new BufferedReader(new
+                InputStreamReader(process2.getInputStream()));
+        String s = null;
+        while ((s = stdInput.readLine()) != null)
+        {
+            System.out.println("The answer is: " + s);
+        }
 
     }
 
-    public static void writer(String a){
+    public static void writer(String a, int[] list){
 
         try {
             PrintWriter out = new PrintWriter(a + ".java", "UTF-8");
+            out.println("import java.io.*;");
             out.println("public class " + a + "{\n");
             out.println("    public static void main(String[] args){\n");
             out.println("        int[] list = new int[2];\n");
-            out.println("        for(int i = 0; i < 2; i++){ list[i] = Integer.parseInt(args[i]); }\n");
+            out.println("        OutputStream os = new FileOutputStream(\"file.txt\");\n");
+            out.println("        list[0] = " + list[0] + ";\n");
+            out.println("        list[1] = " + list[1] + ";\n");
             out.println("        int b = list[0] + list[1];\n");
-            out.println("        System.out.println(b); }}\n");
+            out.println("        os.write(b);\n");
+            out.println("        os.close(); }}\n");
             out.close();
 
         } catch (IOException ex) {
