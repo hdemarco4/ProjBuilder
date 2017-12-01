@@ -10,14 +10,9 @@ public class addTwoNumbers{
         list[1] = 48;
 
         int b = list[0] + list[1];
-/*
-        StringWriter sw = new StringWriter();
-        BufferedWriter bw = new BufferedWriter(sw);
-        bw.write(Integer.toString(b));
-        StringBuffer sb = sw.getBuffer();
-        System.out.println(sb);
-*/
-        StringWriter sw = new StringWriter();
-        sw.write(b + "");
+
+        Process process2 = ProgBuild.getP();
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process2.getOutputStream()));
+        bw.write((char)b);
 
         System.out.println(b); }}

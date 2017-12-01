@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ProgBuild {
-    final static PipedInputStream  input  = new PipedInputStream();
+    private static Process process;
 
     public static void main(String[] args) throws IOException, InterruptedException{
 
@@ -48,13 +48,23 @@ public class ProgBuild {
             out.println("        list[0] = " + list[0] + ";\n");
             out.println("        list[1] = " + list[1] + ";\n");
             out.println("        int b = list[0] + list[1];\n");
-            out.println("        StringWriter sw = new StringWriter();\n");
-            out.println("        sw.write(b + \"\");\n");
+
+            out.println("        Process process2 = ProgBuild.getP();\n");
+            out.println("        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process2.getOutputStream()));\n");
+            out.println("        bw.write((char)b);\n");
+
             out.println("        System.out.println(b); }}");
             out.close();
 
         } catch (IOException ex) {
             System.out.println("File write error");
         }
+    }
+
+    public void setP(Process process2){
+        process = process2;
+    }
+    public static Process getP(){
+        return process;
     }
 }
