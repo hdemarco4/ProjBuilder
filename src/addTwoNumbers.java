@@ -11,8 +11,4 @@ public class addTwoNumbers{
 
         int b = list[0] + list[1];
 
-        Process process2 = ProgBuild.getP();
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process2.getOutputStream()));
-        bw.write((char)b);
-
-        System.out.println(b); }}
+        System.out.println(b +""); }}

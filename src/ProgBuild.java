@@ -1,10 +1,7 @@
 import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.*;
 
 public class ProgBuild {
-    private static Process process;
 
     public static void main(String[] args) throws IOException, InterruptedException{
 
@@ -16,25 +13,15 @@ public class ProgBuild {
         }
 
         String a = "add" + list[0] + "Plus" + list[1];
-//        String a = "addTwoNumbers";
+        File fa = new File(a + ".java");
 
         writer(a, list);
 
-        Path path = FileSystems.getDefault().getPath(".");
-        String compile = "javac " + a + ".java";
-        String run = "java " + a;
-        String[] commands = {"CMD", "/C", path.toString(), compile, run};
+        System.out.println("First number: " + list[0]);
+        System.out.println("Second number: " + list[1]);
 
-        ProcessBuilder pb2 = new ProcessBuilder(commands);
-        Process process2 = pb2.start();
-        BufferedReader br = new BufferedReader(new InputStreamReader(process2.getInputStream()));
-
-        String s;
-
-        while((s=br.readLine())!=null){
-            System.out.println("The answer is: " + s);
-        }
-
+        compileP(fa);
+        runP(fa);
     }
 
     public static void writer(String a, int[] list){
@@ -48,11 +35,6 @@ public class ProgBuild {
             out.println("        list[0] = " + list[0] + ";\n");
             out.println("        list[1] = " + list[1] + ";\n");
             out.println("        int b = list[0] + list[1];\n");
-
-            out.println("        Process process2 = ProgBuild.getP();\n");
-            out.println("        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(process2.getOutputStream()));\n");
-            out.println("        bw.write((char)b);\n");
-
             out.println("        System.out.println(b); }}");
             out.close();
 
@@ -61,10 +43,35 @@ public class ProgBuild {
         }
     }
 
-    public void setP(Process process2){
-        process = process2;
+    public static void compileP(File fa){
+        System.out.println("Compiling " + fa);
+        try {
+            Process pro = Runtime.getRuntime().exec("javac " + fa.getAbsoluteFile());
+            pro.waitFor();
+        }
+        catch (Exception e){
+            System.err.println("Error compiling " + fa);
+        }
     }
-    public static Process getP(){
-        return process;
+
+    public static String classN(File file) {
+        return file.getName().split(".java")[0];
+    }
+
+    public static void runP(File fa){
+        System.out.println("Running " + fa);
+        String cn = classN(fa);
+        try{
+            Process pro = Runtime.getRuntime().exec("java " + cn);
+            BufferedReader in = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String s;
+            while ((s = in.readLine()) != null) {
+                System.out.println("The answer is: " + s);
+            }
+            pro.waitFor();
+        } catch (Exception e) {
+            System.err.println("Error running " + fa);
+            e.printStackTrace();
+        }
     }
 }
